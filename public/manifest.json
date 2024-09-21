@@ -1,0 +1,22 @@
+{
+  "name": "Ortex Login Page",
+  "short_name": "OrtexLogin",
+  "description": "Login page for Ortex.com",
+  "start_url": "/",
+  "id": "/",  
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#ffffff",
+  "icons": [
+    {
+      "src": "/icons/ortex-logo-h.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/icons/ortex-logo-h.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
