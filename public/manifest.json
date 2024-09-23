@@ -1,20 +1,19 @@
 {
-  "name": "Ortex Login Page",
-  "short_name": "OrtexLogin",
-  "description": "Login page for Ortex.com",
+  "name": "PWA Ortex Login",
+  "short_name": "OrtexPWA",
+  "description": "PWA application with Next 14",
   "start_url": "/",
-  "id": "/",  
   "display": "standalone",
-  "background_color": "#000000",
-  "theme_color": "#ffffff",
+  "background_color": "#ffffff",
+  "theme_color": "#000000",
   "icons": [
     {
-      "src": "/icons/ortex-logo-h.png",
-      "sizes": "192x192",
+      "src": "/icons/icon-138x138.png",
+      "sizes": "138x138",
       "type": "image/png"
     },
     {
-      "src": "/icons/ortex-logo-h.png",
+      "src": "/icons/icon-512x512.png",
       "sizes": "512x512",
       "type": "image/png"
     }
