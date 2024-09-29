@@ -11,7 +11,9 @@ import {
   Alert,
   Grid,
   Divider,
+  InputAdornment,
 } from '@mui/material';
+import FadeLoader from 'react-spinners/FadeLoader';
 import { Google as GoogleIcon, Apple as AppleIcon, Visibility, VisibilityOff } from '@mui/icons-material';
 
 const Login = () => {
@@ -24,7 +26,15 @@ const Login = () => {
   const [timestamp, setTimestamp] = useState<string | null>(null);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [showPassword, setShowPassword] = useState(false); 
+  const [loadingModal, setLoadingModal] = useState(true); 
 
+  useEffect(() => {
+    if (showModal) {
+      setTimeout(() => {
+        setLoadingModal(false);
+      }, 2000); 
+    }
+  }, [showModal]);
   useEffect(() => {
     const socket = new WebSocket('ws://stream.tradingeconomics.com/?client=guest:guest');
     socket.onopen = () => {
@@ -73,7 +83,7 @@ const Login = () => {
   };
 
   return (
-    <Container component="main" maxWidth="xs">
+    <Container component="main" sx={{ maxWidth: { xs: '100%', sm: 600 } }}>
       <Box sx={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
         <Typography component="h1" variant="h5" sx={{ color: 'rgb(230, 230, 230)', fontWeight: 800, textAlign: 'center', fontSize: { xs: '1.5rem', md: '2rem' } }}>
           {isLoginView ? 'Sign in' : 'Sign up'}
@@ -100,17 +110,24 @@ const Login = () => {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             InputLabelProps={{ style: { color: 'rgb(230, 230, 230)' }, required: false }}
-            InputProps={{ 
-              style: { color: 'rgb(230, 230, 230)' },
-              endAdornment: (
-                <Button onClick={() => setShowPassword(!showPassword)}>
-                  {showPassword ? <VisibilityOff /> : <Visibility />} 
-                </Button>
-              )
+            slotProps={{
+              input: {
+                style: { color: 'rgb(230, 230, 230)' },
+                endAdornment: (
+                  <InputAdornment position="end"  sx={{ color: 'rgb(230, 230, 230)' }}>
+                    <Button
+                      onClick={() => setShowPassword(!showPassword)}
+                      sx={{ color: 'rgb(230, 230, 230)', padding: 0 }}
+                    >
+                      {showPassword ? <VisibilityOff /> : <Visibility />}
+                    </Button>
+                  </InputAdornment>
+                ),
+              },
             }}
           />
           <Divider sx={{ my: 1, bgcolor: 'rgb(230, 230, 230)' }} />          
-          <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, color: 'rgb(49, 171, 166)' }}>
+          <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, color: ' rgb(230, 230, 230)', bgcolor:' rgb(49, 171, 166)'}}>
             {isLoginView ? 'Login' : 'Sign Up'}
           </Button>
         </form>
@@ -118,7 +135,7 @@ const Login = () => {
         {isLoginView && (
           <Grid container spacing={2} sx={{ mt: 2 }}>
             <Grid item xs>
-              <Button variant="text" onClick={() => setShowModal(true)} sx={{ color: ' rgb(49, 171, 166)', fontFamily: 'Roboto,Helvetica,Arial,sans-serif', fontWeight: 500, fontSize: '0.875rem', textTransform: 'capitalize' }}>
+            <Button variant="text" onClick={() => { setShowModal(true); setLoadingModal(true); }} sx={{ color: ' rgb(49, 171, 166)', fontFamily: 'Roboto,Helvetica,Arial,sans-serif', fontWeight: 500, fontSize: '0.875rem', textTransform: 'capitalize' }}>
                 Forgot Password?
               </Button>
             </Grid>
@@ -132,7 +149,7 @@ const Login = () => {
               startIcon={<GoogleIcon />}
               onClick={handleGoogleLogin}
               fullWidth
-              sx={{ mb: 1 }}
+              sx={{ mb: 1, bgcolor:'transparent', border: 'solid 1px white' }}   
             >
               Login with Google
             </Button>
@@ -141,6 +158,7 @@ const Login = () => {
               startIcon={<AppleIcon />}
               onClick={handleAppleLogin}
               fullWidth
+              sx={{bgcolor:'transparent', border: 'solid 1px white'}}
             >
               Login with Apple
             </Button>
@@ -168,23 +186,69 @@ const Login = () => {
           </Typography>
         </Box>
       </Box>
-
       <Modal open={showModal} onClose={() => setShowModal(false)}>
-        <Box sx={{ padding: 2, bgcolor: 'white', borderRadius: 1, boxShadow: 3 }}>
-          <Typography variant="h6">Reset Password</Typography>
-          <TextField label="Email" fullWidth margin="normal" />
-          <Button variant="contained" onClick={() => setShowModal(false)} sx={{ mt: 2 }}>
-            Send Reset Link
-          </Button>
-        </Box>
-      </Modal>
+  {loadingModal ? (
+    <Box
+      sx={{
+        position: 'fixed', 
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)', 
+        width: '80px', 
+        height: '80px', 
+        backgroundImage: `url('/images/isotipo.png')`, 
+        backgroundSize: '20px', 
+        backgroundRepeat: 'no-repeat', 
+        backgroundPosition: 'center', 
+        borderRadius: '50%', 
+        display: 'flex', 
+        justifyContent: 'center',
+        alignItems: 'center',
+        bgcolor: 'black'
+      }}
+    >
+        <FadeLoader color="rgb(49, 171, 166)" height={15} width={5} radius={9} margin={8} />
+    </Box>
+  ) : (
+    <Box
+      sx={{
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+        bgcolor: 'rgb(230, 230, 230)',
+        p: 4,
+        borderRadius: 2,
+        boxShadow: 24,
+        maxWidth: { xs: '90%', sm: 400 },
+        textAlign: 'center',
+      }}
+    >
+      <Typography variant="h6" sx={{ mb: 2 }}>
+        Reset Password
+      </Typography>
+      <TextField
+        label="Email"
+        fullWidth
+        margin="normal"
+      />
+      <Button
+        variant="contained"
+        onClick={() => setShowModal(false)}
+        sx={{ mt: 2, bgcolor: 'rgb(49, 171, 166)', color: 'white' }}
+      >
+        Send Reset Link
+      </Button>
+    </Box>
+  )}
+</Modal>
 
       <Snackbar open={snackbarOpen} autoHideDuration={6000} onClose={() => setSnackbarOpen(false)}>
         <Alert onClose={() => setSnackbarOpen(false)} severity="error" sx={{ width: '100%' }}>
           {error}
         </Alert>
       </Snackbar>
-    </Container>
+      </Container>
   );
 };
 
